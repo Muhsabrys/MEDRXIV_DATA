@@ -77,7 +77,7 @@ You can change parameters by editing the function call in `scraper.py`:
 scrape_medrxiv_from_file(
     url_file="loop.txt",
     keywords=("alzheimer", "dementia"),   # Replace with your keywords
-    out_file="medrxiv_alzheimer_dementia_202x.json",
+    out_file="medrxiv_LungCancer_202x.json",
     delay=1.0
 )
 ```
