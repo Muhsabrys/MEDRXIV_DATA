@@ -75,6 +75,6 @@ if __name__ == "__main__":
     scrape_medrxiv_from_file(
         url_file="loop.txt",
         keywords=("alzheimer", "dementia"),
-        out_file="medrxiv_alzheimer_dementia_202x.json",
+        out_file="medrxiv_LungCancer_202x.json",
         delay=1.0
     )
