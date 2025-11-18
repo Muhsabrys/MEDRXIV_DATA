@@ -112,3 +112,95 @@ The script saves results in JSON with the following fields:
 - The script resumes from existing output files, so you can stop and restart without losing progress.
 - Ensure your keyword list is lowercase-insensitive (the script handles case automatically).
 - Respect medRxiv’s API by keeping a reasonable delay between requests.
+
+
+Here’s an additional section you can append to your **README.md**. It explains how to extract the PDF URLs from the JSON output file and how to use `wget` across different operating systems to download the files locally.
+
+---
+
+## 📥 Extracting and Downloading PDFs
+
+Once the scraper has finished, your output file (e.g., `medrxiv_LungCancer_2020.json`) will contain metadata for all matched papers, including direct links to the PDF versions.
+
+### 1. Extract PDF URLs
+You can extract all PDF links from the JSON file using a simple Python snippet:
+
+```python
+import json
+
+with open("medrxiv_LungCancer_2020.json", "r", encoding="utf-8") as f:
+    data = json.load(f)
+
+pdf_urls = [item["pdf"] for item in data if item.get("pdf")]
+print("\n".join(pdf_urls))
+```
+
+Save this list to a text file for easier batch downloading:
+
+```python
+with open("pdf_links.txt", "w", encoding="utf-8") as f:
+    for url in pdf_urls:
+        f.write(url + "\n")
+```
+
+This creates a file `pdf_links.txt` containing one PDF URL per line.
+
+---
+
+### 2. Install `wget`
+
+`wget` is a command-line utility for downloading files from the web. Installation differs by operating system:
+
+- **Linux (Debian/Ubuntu):**
+  ```bash
+  sudo apt update
+  sudo apt install wget
+  ```
+
+- **Linux (Fedora/CentOS/RHEL):**
+  ```bash
+  sudo dnf install wget
+  ```
+  or
+  ```bash
+  sudo yum install wget
+  ```
+
+- **macOS (via Homebrew):**
+  ```bash
+  brew install wget
+  ```
+
+- **Windows:**
+  - Option 1: Install via [Chocolatey](https://chocolatey.org/):
+    ```powershell
+    choco install wget
+    ```
+  - Option 2: Download binaries from [GNU Wget for Windows](https://eternallybored.org/misc/wget/).
+  - Ensure `wget.exe` is added to your system PATH.
+
+---
+
+### 3. Download PDFs with `wget`
+
+Once `wget` is installed, you can download all PDFs listed in `pdf_links.txt`:
+
+```bash
+wget -i pdf_links.txt -P ./pdfs
+```
+
+- `-i pdf_links.txt` tells `wget` to read URLs from the file.
+- `-P ./pdfs` saves all downloaded files into a folder named `pdfs`.
+
+---
+
+### 4. Notes
+- If downloads are interrupted, re-run the command; `wget` will skip already downloaded files.
+- To limit download speed (helpful for large batches):
+  ```bash
+  wget --limit-rate=200k -i pdf_links.txt -P ./pdfs
+  ```
+- To resume partially downloaded files:
+  ```bash
+  wget -c -i pdf_links.txt -P ./pdfs
+  ```
